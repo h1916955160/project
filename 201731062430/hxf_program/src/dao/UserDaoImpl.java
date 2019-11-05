@@ -1,4 +1,6 @@
 package dao;
+import user.Message_port;
+import user.invitation;
 import user.user_reg;
 import user.garbage;
 import utils.DBUtil;
@@ -16,7 +18,7 @@ public class UserDaoImpl implements UserDao {
         PreparedStatement ps;
         ResultSet rs;
         try {
-            con=DBUtil.getCon();//1:获取数据库的连接
+            con=DBUtil.user_getCon();//1:获取数据库的连接
             //2:书写sql语句
             String sql="select * from user where user_id=? and user_pwd=? ";
             ps=con.prepareStatement(sql);//3：预编译
@@ -132,5 +134,82 @@ public class UserDaoImpl implements UserDao {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<invitation> post_invitation(int user_id)
+    {
+        ArrayList<invitation> invitationArrayList = new ArrayList<>();
+        Connection con;
+        PreparedStatement ps;
+        ResultSet rs;
+        try {
+            //链接数据库
+            con = DBUtil.getCon();
+            //MySQL语句
+            String sql = "SELECT * FROM invitation.post_t where user_id != ? order by invitation.post_t.T_time desc  ";
+
+            ps=con.prepareStatement(sql);//预编译
+            ps.setObject(1,user_id);
+            rs=ps.executeQuery();//执行
+
+            invitation inv ;
+
+            while(rs.next())
+            {
+                inv = new invitation();
+                inv.setUser_id(rs.getInt("user_id"));
+                inv.setPost_topic(rs.getString("T_topic"));
+                inv.setPost_content(rs.getString("T_content"));
+                inv.setPost_time(rs.getString("T_time"));
+                inv.setPost_id(rs.getInt("T_id"));
+
+                invitationArrayList.add(inv);
+
+            }
+            if(rs.next())
+            {
+                return null;
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return invitationArrayList;
+    }
+
+    public ArrayList<Message_port> port_Message(int t_id,int u_id)
+    {
+        ArrayList<Message_port> message_list= new ArrayList<>();
+        Connection con;
+        PreparedStatement ps;
+        ResultSet rs;
+        try {
+            //链接数据库
+            con = DBUtil.getCon();
+            //MySQL语句
+            String sql = "SELECT * FROM invitation.message_port WHERE T_id = ? and U_id =? order by invitation.message_port.M_time  ";
+            ps=con.prepareStatement(sql);//预编译
+            ps.setObject(1,t_id);
+            ps.setObject(2,u_id);
+            rs=ps.executeQuery();//执行语句
+
+            Message_port msg ;
+
+            while(rs.next())
+            {
+                msg = new Message_port();
+                msg.setMessage_port_id(rs.getInt("M_id"));
+                msg.setMessage_content(rs.getString("M_content"));
+                msg.setMessage_time(rs.getString("M_time"));
+                msg.setUser_id(rs.getInt("U_id"));
+                msg.setPost_id(rs.getInt("T_id"));
+                message_list.add(msg);
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return message_list;
     }
 }

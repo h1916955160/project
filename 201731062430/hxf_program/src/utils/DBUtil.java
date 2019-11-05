@@ -9,13 +9,23 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class DBUtil {
-    private static String dbUrl="jdbc:mysql://localhost:3306/db_garbage_system";
+
     private  static String user="root";
     private  static  String password="1916955160huang";
     private static String jdbcName="com.mysql.jdbc.Driver";
 
     //连接数据库
     public   static Connection getCon() throws ClassNotFoundException, SQLException{
+        String dbUrl="jdbc:mysql://localhost:3306/invitation";
+        Class.forName(jdbcName);
+        System.out.println("测试加载数据库成功");
+        Connection conn = DriverManager.getConnection(dbUrl, user, password);
+        System.out.println("测试数据库连接成功");
+        return conn;
+    }
+
+    public   static Connection user_getCon() throws ClassNotFoundException, SQLException{
+        String dbUrl="jdbc:mysql://localhost:3306/user_info";
         Class.forName(jdbcName);
         System.out.println("测试加载数据库成功");
         Connection conn = DriverManager.getConnection(dbUrl, user, password);
