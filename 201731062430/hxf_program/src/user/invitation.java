@@ -7,6 +7,7 @@ public class invitation {
     private String post_time;
     private int user_id;
 
+
     public int getPost_id() {
         return post_id;
     }

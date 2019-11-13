@@ -1,5 +1,6 @@
 package servlet;
 
+import user.Message_port;
 import user.invitation;
 import utils.DBUtil;
 
@@ -24,59 +25,46 @@ public class CommentServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-
         response.getWriter().append("Served at: ").append(request.getContextPath());
-        int M_id = (int)request.getSession().getAttribute("M_id");
 
+        //获取评论相关信息，把评论写入数据库
+        int M_id = (int)request.getSession().getAttribute("M_id");
         String Comment_message = request.getParameter("comment_message");
         Date date = new Date();
+        int B_id = Integer.parseInt(request.getParameter("B_id"));
         int T_id=Integer.parseInt(request.getParameter("T_id"));
         int U_id =Integer.parseInt(request.getParameter("U_id"));
-
+        //对象数组，后面传参给sql语句用
         List<Object> list = new ArrayList<>();
         list.add(M_id);
         list.add(Comment_message);
         list.add(date);
+        list.add(B_id);
         list.add(T_id);
         list.add(U_id);
 
-        String sql = "INSERT INTO invitation.message_port VALUE(?,?,?,?,?)";
+        String sql = "INSERT INTO invitation.message_port VALUE(?,?,?,?,?,?)";
         boolean flag= false;
         try {
-            flag = DBUtil.addUpdateDelete(sql,list.toArray());
+            flag = DBUtil.addUpdateDelete(sql,list.toArray());//函数，传参以及执行等步骤，返回一个布尔值
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
         if(flag)
         {
-            response.getWriter().write("<javascript>alert('评论成功')</javascript>");
-            response.setCharacterEncoding("UTF-8");
-            request.getRequestDispatcher("/jsp/invitation.jsp").forward(request, response);
+            //request.setAttribute("flag",true);
+
+            response.sendRedirect(request.getHeader("Referer"));
+            //request.getRequestDispatcher("/jsp/invitation.jsp").forward(request, response);
         }
         else
         {
-            response.getWriter().write("<javascript>alert('评论失败')</javascript>");
+            //request.setAttribute("flag",false);
             response.setCharacterEncoding("UTF-8");
-            request.getRequestDispatcher("/jsp/invitation.jsp").forward(request, response);
+            response.sendRedirect(request.getHeader("Referer"));
         }
 
-        /*Connection con;
-        PreparedStatement ps;
-        ResultSet rs;
-        try {
-            con = DBUtil.getCon();
-            String sql = "INSERT INTO invitation.message_port VALUE(?,?,?,?,?)";
-            ps=con.prepareStatement(sql);
-            ps.setObject(1,M_id);
-            ps.setObject(2,Comment_message);
-            ps.setObject(3,date);
-            ps.setObject(4,T_id);
-            ps.setObject(5,U_id);
-            rs=ps.executeQuery();
 
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }*/
 
     }
 

@@ -1,3 +1,4 @@
+
 <%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="user.invitation" %>
@@ -27,41 +28,33 @@
     <a>.....</a>
     <a href="invitation.jsp">返回帖子页面</a>
 </div>
-<!--先根据用户ID从评论表中把涉及用户到的评论信息取出来 然后打印相关信息-->
+
 <%
-    //
-    user_reg user = (user_reg)session.getAttribute("user");
-    int U_id= user.getAcount();//得到登录用户ID
-    UserDao dao = new UserDaoImpl();
-    ArrayList<Message_port> m_list = dao.port_Message(-1,U_id);//评论
+        user_reg user = (user_reg)session.getAttribute("user");
+        int U_id= user.getAcount();//得到登录用户ID
+        UserDao dao = new UserDaoImpl();
+        ArrayList<Message_port> m_list = dao.port_Message(-1,U_id);//评论
 
-    if(m_list.size()>0)
-    {
-        for (int j=0;j<m_list.size();j++)//从取出的评论信息中，然后根据这条评论信息涉及的用户ID和帖子ID来找到帖子和相关的评论
+        if(m_list.size()>0)
         {
-            ArrayList<invitation> list1 = dao.post_invitation(m_list.get(j).getUser_id(),m_list.get(j).getPost_id());//帖子
-            if(list1.size()>0)
+            for (int j=0;j<m_list.size();j++)
             {
-%>
-
+                ArrayList<invitation> list1 = dao.post_invitation(m_list.get(j).getUser_id(),m_list.get(j).getPost_id());//帖子
+                if(list1.size()>0)
+                {
+    %>
 <div class="container">
-    <!-- 打印信息：评论或者回复你的人 -->
     <div class="row">
         <p><a><%=m_list.get(j).getMessage_port_id()%></a>评论或者回复了你</p>
     </div>
-
-    <!-- 打印时间-->
     <div class="row">
         <p><%= m_list.get(j).getMessage_time()%></p>
         <br>
     </div>
-
-    <!-- 在这个帖子下对你进行评论或者回复的-->
     <div class="row">
         <p><a><%=list1.get(0).getUser_id()%></a>：<%=list1.get(0).getPost_content()%></p>
         <br>
     </div>
-
     <%
         ArrayList<Message_port> R_list = dao.port_Message1(list1.get(0).getPost_id(),list1.get(0).getUser_id(),m_list.get(j).getMessage_port_id());
         if(R_list.size()>0)
@@ -75,8 +68,8 @@
         %>
         <p><a><%=R_list.get(k).getMessage_port_id()%></a>评论你：<%=R_list.get(k).getMessage_content()%></p>
         <%
-        }else
-        {
+            }else
+            {
         %>
         <p><a><%=R_list.get(k).getMessage_port_id()%></a>回复<a><%=R_list.get(k).getB_id()%></a>：<%=R_list.get(k).getMessage_content()%></p>
         <% } %>
@@ -84,7 +77,6 @@
     <%
             }
     %>
-    <!-- 评论提交表单 -->
     <div class="row" id='input_box' >
         <form action="${pageContext.request.contextPath}/servlet.CommentServlet?T_id=<%=m_list.get(j).getPost_id()%>&U_id=<%=m_list.get(j).getUser_id()%>&B_id=<%=m_list.get(j).getMessage_port_id()%>" method="post" id="message_text">
                 <textarea class="form-control" rows="1" name="comment_message" ></textarea>
@@ -92,11 +84,11 @@
         </form>
     </div>
 </div>
-<%
+    <%
+                }
             }
         }
-    }
-%>
+    %>
 
 </body> 
 </html>

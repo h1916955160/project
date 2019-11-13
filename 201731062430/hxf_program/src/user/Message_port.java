@@ -4,6 +4,7 @@ public class Message_port {
     private int Message_port_id;
     private int User_id;
     private int Post_id;
+    private int B_id;
     private String Message_content;
     private String Message_time;
 
@@ -45,5 +46,13 @@ public class Message_port {
 
     public void setMessage_port_id(int message_port_id) {
         Message_port_id = message_port_id;
+    }
+
+    public int getB_id() {
+        return B_id;
+    }
+
+    public void setB_id(int b_id) {
+        B_id = b_id;
     }
 }

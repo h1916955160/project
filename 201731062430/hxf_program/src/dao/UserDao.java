@@ -14,7 +14,8 @@ public interface UserDao {
     public boolean register(user_reg user) throws SQLException, ClassNotFoundException;
     public  boolean update(user_reg user1,user_reg user2) throws SQLException, ClassNotFoundException;
     public List<garbage> search(String user_addr);
-    public ArrayList<invitation> post_invitation(int user_id);
+    public ArrayList<invitation> post_invitation(int user_id,int post_id);
     public  ArrayList<Message_port> port_Message(int t_id,int u_id);
+    public  ArrayList<Message_port> port_Message1(int t_id,int u_id,int m_id);
 
 }
